@@ -1,0 +1,25 @@
+{
+  "name": "susiair-pilot-app",
+  "private": true,
+  "workspaces": [
+    "nest",
+    "nuxt"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace nest",
+    "dev:web": "npm run dev --workspace nuxt",
+    "build": "npm run build --workspace nest && npm run build --workspace nuxt",
+    "test": "npm test --workspace nest",
+    "test:domain": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test nest/test/domain.test.mjs tests/calendar.test.mjs tests/color.test.mjs tests/logbook.test.mjs",
+    "brand:fetch": "node scripts/fetch-brand-logo.mjs",
+    "test:e2e": "playwright test",
+    "typecheck": "npm run typecheck --workspace nest && npm run typecheck --workspace nuxt"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.56.1"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

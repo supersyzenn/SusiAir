@@ -1,0 +1,23 @@
+$navy:#0E2138;
+$red:#E63757;
+$muted:#6B7280;
+$background:#F5F6F8;
+$surface:#FFFFFF;
+$success:#1FBF8F;
+$warning:#F59E0B;
+$cyan:#22C5E8;
+$line:rgba($navy,.12);
+
+:root {
+  --color-primary:#{$navy};
+  --color-brand-red:#{$red};
+  --color-background:#{$background};
+  --color-surface:#{$surface};
+  --color-text-primary:#{$navy};
+  --color-text-secondary:#{$muted};
+  --color-success:#{$success};
+  --color-warning:#{$warning};
+  --color-danger:#{$red};
+  --color-chart-accent:#{$cyan};
+  --page-gutter:clamp(20px,3vw,64px);
+}

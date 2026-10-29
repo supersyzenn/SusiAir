@@ -1,0 +1,372 @@
+{
+  "info": {
+    "name": "Susi Air Pilot API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Generated from api/openapi.json by scripts/generate-api-artifacts.py. Assertions assume APP_TODAY=2026-05-15 and the supplied seeds."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\": \"johndoe\", \"password\": \"susiairtest\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Token issued', () => pm.expect(body.accessToken).to.be.a('string'));",
+              "pm.collectionVariables.set('token', body.accessToken);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pilot",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/pilot/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Seeded profile', () => { pm.expect(body.name).to.eql('John Doe'); pm.expect(body.today).to.eql('2026-05-15'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Daily flight hours",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/flight-hours?from=2026-05-01&to=2026-05-15"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Inclusive daily range', () => pm.expect(body.days).to.have.lengthOf(15));",
+              "pm.test('Logbook statistics', () => pm.expect(body.statistics).to.eql({totalHours:44,flyingDays:10,averageFlyingDayHours:4.4}));",
+              "pm.test('History metadata', () => { pm.expect(body.today).to.eql('2026-05-15'); pm.expect(body.dataStart).to.eql('2024-12-27'); pm.expect(body.dataEnd).to.eql('2026-05-31'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Summary 1w",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/flight-hours/summary?range=1w"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Chart bounds', () => { pm.expect(body.windowDays).to.eql(7); pm.expect(body.limit).to.eql(40); pm.expect(body.max).to.eql(45); });",
+              "pm.test('Today centered', () => { pm.expect(body.series).to.have.lengthOf(15); pm.expect(body.series[7].date).to.eql(body.today); pm.expect(body.series[14].projected).to.eql(true); });",
+              "pm.test('Server card totals', () => pm.expect(body.cards.map(c => c.hours)).to.eql([6.4,25.2,87.2,1013.8]));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Summary 1m",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/flight-hours/summary?range=1m"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Chart bounds', () => { pm.expect(body.windowDays).to.eql(30); pm.expect(body.limit).to.eql(100); pm.expect(body.max).to.eql(125); });",
+              "pm.test('Today centered', () => { pm.expect(body.series).to.have.lengthOf(15); pm.expect(body.series[7].date).to.eql(body.today); pm.expect(body.series[14].projected).to.eql(true); });",
+              "pm.test('Server card totals', () => pm.expect(body.cards.map(c => c.hours)).to.eql([6.4,25.2,87.2,1013.8]));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Summary 3m",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/flight-hours/summary?range=3m"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Chart bounds', () => { pm.expect(body.windowDays).to.eql(90); pm.expect(body.limit).to.eql(300); pm.expect(body.max).to.eql(325); });",
+              "pm.test('Today centered', () => { pm.expect(body.series).to.have.lengthOf(15); pm.expect(body.series[7].date).to.eql(body.today); pm.expect(body.series[14].projected).to.eql(true); });",
+              "pm.test('Server card totals', () => pm.expect(body.cards.map(c => c.hours)).to.eql([6.4,25.2,87.2,1013.8]));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Summary 6m",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/flight-hours/summary?range=6m"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Chart bounds', () => { pm.expect(body.windowDays).to.eql(180); pm.expect(body.limit).to.eql(600); pm.expect(body.max).to.eql(625); });",
+              "pm.test('Today centered', () => { pm.expect(body.series).to.have.lengthOf(15); pm.expect(body.series[7].date).to.eql(body.today); pm.expect(body.series[14].projected).to.eql(true); });",
+              "pm.test('Server card totals', () => pm.expect(body.cards.map(c => c.hours)).to.eql([6.4,25.2,87.2,1013.8]));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Summary 1y",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/flight-hours/summary?range=1y"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Chart bounds', () => { pm.expect(body.windowDays).to.eql(365); pm.expect(body.limit).to.eql(1050); pm.expect(body.max).to.eql(1200); });",
+              "pm.test('Today centered', () => { pm.expect(body.series).to.have.lengthOf(15); pm.expect(body.series[7].date).to.eql(body.today); pm.expect(body.series[14].projected).to.eql(true); });",
+              "pm.test('Server card totals', () => pm.expect(body.cards.map(c => c.hours)).to.eql([6.4,25.2,87.2,1013.8]));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/documents"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Expiry calculated from May 15', () => { const license=body.documents.find(d=>d.id==='doc_license'); pm.expect(license.daysRemaining).to.eql(14); pm.expect(license.status).to.eql('soon'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "May schedule",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/schedules?year=2026&month=05"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('Month filtered', () => { pm.expect(body.legend).to.have.lengthOf(10); pm.expect(body.schedules.every(d=>d.duty_date.startsWith('2026-05-'))).to.eql(true); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invalid calendar date",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/flight-hours?from=2026-02-30&to=2026-03-02"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "const body = pm.response.json();",
+              "pm.test('Consistent error', () => pm.expect(body.code).to.eql('BAD_REQUEST'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invalid range",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/flight-hours/summary?range=2w"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "const body = pm.response.json();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Missing authentication",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/pilot/me",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "const body = pm.response.json();",
+              "pm.test('Guard enforced', () => pm.expect(body.code).to.eql('UNAUTHORIZED'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bad credentials",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\": \"johndoe\", \"password\": \"wrong\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "const body = pm.response.json();",
+              "pm.test('Credentials rejected', () => pm.expect(body.code).to.eql('UNAUTHORIZED'));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

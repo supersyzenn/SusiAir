@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: susiair-pilot-api
+    runtime: docker
+    plan: free
+    rootDir: nest
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_TODAY
+        value: "2026-05-15"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
+      - key: PILOT_AVATAR_URL
+        sync: false
