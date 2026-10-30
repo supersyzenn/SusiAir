@@ -1,5 +1,9 @@
 # Susi Air Pilot App
 
+Production frontend: https://susiairpilot.vercel.app
+
+Production API: https://susi-air-one.vercel.app
+
 Mobile-first pilot workspace built from `Susi_Air_Technical_Brief_v3.pdf` and the three supplied JSON files. Nuxt 3 frontend, NestJS REST backend, no database. Includes Sign In, Home, Schedule, and the subsequently requested daily-hours Logbook.
 
 ## Run locally
@@ -66,8 +70,7 @@ nuxt/                  Nuxt 3 pages, Pinia session, SCSS, SVG chart, calendar
 api/openapi.json       Authoritative generated API interface
 postman/               Importable collection with positive/negative assertions
 tests/e2e/             Real API-to-browser flow checks
-docs/superpowers/      Design and implementation plan
-docs/verification.md   Checks actually run and remaining verification gaps
+docs/brand-assets.md   Official asset provenance and UI palette
 ```
 
 Root JSON files are the untouched source files; `nest/data/` contains exact deployment copies. The frontend contains no seeded business data.
@@ -152,6 +155,9 @@ npm start
 
 Or build the supplied Dockerfile with `nest` as build context. The image includes only production runtime dependencies, compiled code and seed data. `render.yaml` configures a Render service and a generated JWT secret. Set frontend origin and avatar URL in Render. Health routes remain protected per the brief; use the platform's process/TCP health detection rather than an unauthenticated GET health check.
 
+For deploying the backend to Vercel (Serverless):
+Import the repository into Vercel, set root directory to `nest`, and use the **NestJS** framework preset. The supplied `nest/vercel.json` selects this preset, uses `src/main.ts` as the native server entrypoint, and includes the JSON seed data in the function bundle. Use Node.js 22.x. Add production environment variables `APP_TODAY=2026-05-15`, `JWT_SECRET=<random-secret-of-at-least-32-characters>`, `CORS_ORIGINS=<deployed-frontend-url>`, and `PILOT_AVATAR_URL=<deployed-frontend-url>/avatar.svg`.
+
 Frontend independently:
 
 ```sh
@@ -163,11 +169,11 @@ npm start
 
 For Vercel, import the GitHub repository, set project root to `nuxt`, use Nuxt framework detection and the supplied `vercel.json`, and set `NUXT_PUBLIC_API_BASE` to the deployed API HTTPS origin. Deploy a preview, set its exact origin in backend `CORS_ORIGINS`, and check login before production promotion. For a monorepo import, enable access to source files outside the root directory if Vercel needs the root workspace lockfile. Both packages also support independent repository deployment.
 
-This checkout does **not** contain GitHub or live deployment URLs. Publishing requires a reachable registry, a GitHub remote, and authenticated hosting access. Configuration files alone are not live deployments. Resolve the verification gaps below before publishing.
+For CLI deployment from the repository root, select the matching Vercel project using `npx vercel deploy --project <project-name> --prod`. Keep the project's Root Directory set to `nest` or `nuxt` respectively. The root `.vercelignore` excludes local environment files, generated reports, and internal working notes from uploads. Set `NUXT_PUBLIC_API_BASE` before building the frontend; it must use the backend's public HTTPS origin rather than `localhost`.
 
 ## Current verification limits
 
-Both production builds and framework typechecks pass. The backend suite has 38 passing tests, the dependency-free suite 21, and the desktop/mobile browser suite 39 passing with one documented WebKit wildcard-address skip. The local Postman run passes 14 requests and 39 assertions. Official brand assets and screenshots from compact to ultrawide have been visually checked. Browser-rendered palette values and favicon 200 response are recorded in `output/ui/brand-audit.json`. Development CORS accepts equivalent local addresses on the configured frontend port; production remains restricted to exact configured origins. Manual screen-reader and physical-device checks remain outside the automated evidence. See [verification evidence](docs/verification.md). Deployment is deferred at the user's request.
+The automated checks cover backend behavior, domain calculations, API assertions, and desktop/mobile browser flows. Run the commands above to verify your checkout. Visual QA screenshots and reports are generated locally and excluded from Git. Development CORS accepts equivalent local addresses on the configured frontend port; production remains restricted to exact configured origins. Manual screen-reader and physical-device checks remain outside the automated coverage.
 
 ## With more time
 

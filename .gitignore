@@ -1,13 +1,50 @@
+# Dependencies and generated builds
 node_modules/
 .nuxt/
 .output/
+.nitro/
 dist/
 coverage/
+.cache/
+*.tsbuildinfo
+.vercel/
+.netlify/
+
+# Local environment and credentials (keep distributable examples)
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.aws/
+.npmrc
+
+# Test reports, screenshots, and local logs
 test-results/
 playwright-report/
-.DS_Store
+blob-report/
+/output/
+*.log
+
+# Local assistant configuration and internal working notes
+/.agents/
+/.codex/
 .superpowers/
 .postman/
+/docs/superpowers/
+/docs/progress.md
+/docs/logbook-progress.md
+/docs/verification.md
+/docs/requirements-checklist.md
+/Susi_Air_Technical_Brief_v3.pdf
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

@@ -1,0 +1,37 @@
+# Local configuration, credentials, and assistant state
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+.aws/
+.agents/
+.codex/
+.superpowers/
+.postman/
+.npmrc
+
+# Generated artifacts and internal project notes
+node_modules/
+**/node_modules/
+**/.nuxt/
+**/.output/
+**/dist/
+**/coverage/
+test-results/
+playwright-report/
+output/
+docs/superpowers/
+docs/progress.md
+docs/logbook-progress.md
+docs/requirements-checklist.md
+docs/verification.md
+Susi_Air_Technical_Brief_v3.pdf
+**/*.log
+.idea/
+.vscode/

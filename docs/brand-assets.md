@@ -12,7 +12,7 @@ The favicon and apple-touch URLs were read from the site's actual HTML icon decl
 
 ## UI role palette
 
-The canonical values live in `nuxt/assets/scss/_tokens.scss`. Rendered values and representative CTA/badge/chart colors were inspected in the browser and recorded at `output/ui/brand-audit.json`.
+The canonical values live in `nuxt/assets/scss/_tokens.scss`. Visual QA reports and screenshots are generated locally under `output/ui/` and excluded from Git.
 
 | Role | Exact color |
 | --- | --- |
